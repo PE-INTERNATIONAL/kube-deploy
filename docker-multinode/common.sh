@@ -346,7 +346,7 @@ kube::multinode::start_k8s_master() {
     --privileged \
     --restart=${RESTART_POLICY} \
     ${KUBELET_MOUNTS} \
-    gcr.io/google_containers/hyperkube-${ARCH}:${K8S_VERSION} \
+    quay.io/tsone/hyperkube-tsone:${K8S_VERSION} \
     /hyperkube kubelet \
       --allow-privileged \
       --api-servers=http://localhost:8080 \
@@ -372,7 +372,7 @@ kube::multinode::start_k8s_worker() {
     --privileged \
     --restart=${RESTART_POLICY} \
     ${KUBELET_MOUNTS} \
-    gcr.io/google_containers/hyperkube-${ARCH}:${K8S_VERSION} \
+    quay.io/tsone/hyperkube-tsone:${K8S_VERSION} \
     /hyperkube kubelet \
       --allow-privileged \
       --api-servers=http://${MASTER_IP}:8080 \
@@ -400,7 +400,7 @@ kube::multinode::start_k8s_worker_proxy() {
     --net=host \
     --privileged \
     --restart=${RESTART_POLICY} \
-    gcr.io/google_containers/hyperkube-${ARCH}:${K8S_VERSION} \
+    quay.io/tsone/hyperkube-tsone:${K8S_VERSION} \
     /hyperkube proxy \
         --master=http://${MASTER_IP}:8080 \
         --v=2
@@ -429,7 +429,7 @@ kube::multinode::turndown(){
     kube::log::status "Killing hyperkube containers..."
 
     # Kill all hyperkube docker images
-    docker rm -f $(docker ps | grep gcr.io/google_containers/hyperkube | awk '{print $1}')
+    docker rm -f $(docker ps | grep quay.io/tsone/hyperkube-tsone | awk '{print $1}')
   fi
 
   if [[ $(kube::helpers::is_running /pause) == "true" ]]; then
@@ -437,7 +437,7 @@ kube::multinode::turndown(){
     kube::log::status "Killing pause containers..."
 
     # Kill all pause docker images
-    docker rm -f $(docker ps | grep gcr.io/google_containers/pause | awk '{print $1}')
+    docker rm -f $(docker ps | grep quay.io/tsone/pause | awk '{print $1}')
   fi
 
   if [[ $(docker ps -q | wc -l) != 0 ]]; then
